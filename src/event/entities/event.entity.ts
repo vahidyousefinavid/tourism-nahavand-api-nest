@@ -33,6 +33,10 @@ export class Event {
     @Column({ type: 'json', nullable: false })
     organizer: { [lang: string]: string }; 
 
+    
+    @Column({ type: 'int', default: 0 })
+    views: number;
+    
     @OneToMany(() => EventTimeRange, (timeRange) => timeRange.event, {
         cascade: true,
     })

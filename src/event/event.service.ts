@@ -19,22 +19,40 @@ export class EventService {
     return this.eventRepo.save(event);
   }
 
-  async findAll() {    
-    return this.eventRepo.find({ relations: ['timeRanges'] });
+  // ✅ حالا pagination دارد
+  async findAll(page = 1, limit = 10) {
+    const [data, total] = await this.eventRepo.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { createdAt: 'DESC' }, // مطمئن شو ستون createdAt داری
+      relations: ['timeRanges'],
+    });
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        lastPage: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOne(id: string) {
     const event = await this.eventRepo.findOne({ where: { id }, relations: ['timeRanges'] });
     if (!event) throw new NotFoundException('Event not found');
+
+    event.views++;
+    await this.eventRepo.save(event);
+
     return event;
   }
 
   async update(id: string, dto: UpdateEventDto) {
     const event = await this.findOne(id);
 
-    // حذف تصویر قبلی در صورت تغییر
     if (dto.image && event.image && dto.image !== event.image) {
-      const oldImagePath = path.join(process.cwd(), event.image); // مسیر نسبی به root
+      const oldImagePath = path.join(process.cwd(), event.image);
       if (fs.existsSync(oldImagePath)) {
         fs.unlinkSync(oldImagePath);
       }
@@ -47,7 +65,6 @@ export class EventService {
   async remove(id: string) {
     const event = await this.findOne(id);
 
-    // حذف تصویر در صورت وجود
     if (event.image) {
       const imagePath = path.join(process.cwd(), event.image);
       if (fs.existsSync(imagePath)) {
@@ -56,5 +73,14 @@ export class EventService {
     }
 
     return this.eventRepo.remove(event);
+  }
+
+  // ✅ متد جدید: ۷ ایونت پر بازدید
+  async getTopByViews() {
+    return this.eventRepo.find({
+      order: { views: 'DESC' }, // مطمئن شو ستون views داری
+      take: 7,
+      relations: ['timeRanges'],
+    });
   }
 }

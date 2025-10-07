@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -18,7 +19,7 @@ import { extname } from 'path';
 
 @Controller('events')
 export class EventController {
-  constructor(private readonly eventService: EventService) { }
+  constructor(private readonly eventService: EventService) {}
 
   @Post()
   @UseInterceptors(
@@ -26,7 +27,8 @@ export class EventController {
       storage: diskStorage({
         destination: './uploads/events',
         filename: (req, file, cb) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
           cb(null, uniqueSuffix + extname(file.originalname));
         },
       }),
@@ -40,9 +42,10 @@ export class EventController {
       limits: { fileSize: 5 * 1024 * 1024 },
     }),
   )
-  async create(@UploadedFile() file: Express.Multer.File, @Body('dto') dto: string) {
-    console.log(JSON.parse(dto));
-
+  async create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('dto') dto: string,
+  ) {
     let parsedDto: CreateEventDto;
     try {
       parsedDto = JSON.parse(dto);
@@ -50,11 +53,8 @@ export class EventController {
       parsedDto = {} as CreateEventDto;
     }
 
-    if (file) {
-      parsedDto.image = `/uploads/events/${file.filename}`;
-    }
+    if (file) parsedDto.image = `/uploads/events/${file.filename}`;
 
-    // اگر timeRanges هنوز رشته است، parse کنیم
     if (parsedDto.timeRanges && typeof parsedDto.timeRanges === 'string') {
       try {
         parsedDto.timeRanges = JSON.parse(parsedDto.timeRanges);
@@ -66,15 +66,24 @@ export class EventController {
     return this.eventService.create(parsedDto);
   }
 
-
+  // ✅ حالا از pagination پشتیبانی می‌کند
   @Get()
-  findAll() {
-    return this.eventService.findAll();
+  findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    return this.eventService.findAll(+page, +limit);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.eventService.findOne(id);
+  }
+
+  // ✅ متد جدید: ۷ ایونت با بیشترین بازدید
+  @Get('/top/views')
+  getTopByViews() {
+    return this.eventService.getTopByViews();
   }
 
   @Put(':id')
@@ -83,7 +92,8 @@ export class EventController {
       storage: diskStorage({
         destination: './uploads/events',
         filename: (req, file, cb) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
           cb(null, uniqueSuffix + extname(file.originalname));
         },
       }),
@@ -92,7 +102,7 @@ export class EventController {
   update(
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
-    @Body('dto') dto: string,  // <-- اینجا dto رو به صورت رشته میگیریم
+    @Body('dto') dto: string,
   ) {
     let parsedDto: UpdateEventDto;
     try {
@@ -101,11 +111,8 @@ export class EventController {
       parsedDto = {} as UpdateEventDto;
     }
 
-    if (file) {
-      parsedDto.image = `/uploads/events/${file.filename}`;
-    }
+    if (file) parsedDto.image = `/uploads/events/${file.filename}`;
 
-    // اگر timeRanges هنوز رشته است، parse کنیم
     if (parsedDto.timeRanges && typeof parsedDto.timeRanges === 'string') {
       try {
         parsedDto.timeRanges = JSON.parse(parsedDto.timeRanges);
@@ -114,7 +121,6 @@ export class EventController {
       }
     }
 
-    console.log(parsedDto); // حالا کامل خواهد بود
     return this.eventService.update(id, parsedDto);
   }
 

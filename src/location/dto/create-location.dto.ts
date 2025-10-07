@@ -1,51 +1,59 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsString, IsNumberString, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsEnum, IsArray, ArrayNotEmpty, IsNumber, Min, Max, IsInt, IsObject, IsString } from 'class-validator';
 
 export class CreateLocationDto {
-  @ApiProperty()
+  @ApiProperty({ description: 'Localized names', example: { fa: 'نام فارسی', en: 'English Name' } })
   @IsNotEmpty()
-  @IsString()
-  title: string;
+  @IsObject()
+  name: Record<string, string>;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Localized descriptions', example: { fa: 'توضیحات فارسی', en: 'English Description' } })
   @IsNotEmpty()
-  @IsString()
-  description: string;
+  @IsObject()
+  description: Record<string, string>;
 
-  @ApiProperty({ type: Date, format: 'date' })
-  @Type(() => Date)
+  @ApiProperty({ enum: ['historical', 'natural', 'cultural', 'religious'] })
   @IsNotEmpty()
-  @IsDate()
-  date: Date;
+  @IsEnum(['historical', 'natural', 'cultural', 'religious'])
+  category: 'historical' | 'natural' | 'cultural' | 'religious';
 
-  @ApiProperty({ description: 'Location coordinate as bigint string' })
-  @IsNotEmpty()
-  @IsNumberString()
-  location: string;  // چون تو Entity bigint هست، اینجا به عنوان رشته عددی کنترل می‌کنیم
+  @ApiProperty({ type: [String], description: 'List of image URLs' })
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsString({ each: true })
+  images: string[];
 
-  @ApiProperty({ description: 'Unique latitude and longitude string' })
-  @IsNotEmpty()
-  @IsString()
-  latlang: string;
+  @ApiProperty({ description: 'Index of the main image in the images array', default: 0 })
+  @IsInt()
+  @Min(0)
+  @IsOptional()
+  mainImageIndex?: number = 0;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  price: string;
+  @ApiProperty({ description: 'Localized facilities', example: { fa: ['وای‌فای', 'پارکینگ'], en: ['Wi-Fi', 'Parking'] }, required: false })
+  @IsOptional()
+  @IsObject()
+  facilities?: Record<string, string[]>;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Localized opening hours', example: { fa: '8-18', en: '8AM-6PM' } })
   @IsNotEmpty()
-  @IsString()
-  capacity: string;
+  @IsObject()
+  openingHours: Record<string, string>;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Localized entry fee', example: { fa: '20 هزار تومان', en: '$2' } })
   @IsNotEmpty()
-  @IsString()
-  registered: string;
+  @IsObject()
+  entryFee: Record<string, string>;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  organizer: string;
+  @ApiProperty({ description: 'Rating between 0 and 5', required: false })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(5)
+  rating?: number;
+
+  @ApiProperty({ description: 'Number of reviews', required: false })
+  @IsOptional()
+  @IsNumber()
+  reviews?: number;
+  latlng: { lat: number; lng: number; };
 }
