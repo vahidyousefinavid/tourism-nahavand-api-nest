@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: mainUser
+      POSTGRES_PASSWORD: Shimakoo@1385
+      POSTGRES_DB: tourism_nahavand
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - turism-nahavand-network
+
+  nest:
+    build: .
+    container_name: nest_app
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      - .env
+    ports:
+      - "4000:4000"
+    networks:
+      - turism-nahavand-network
+
+volumes:
+  pgdata:
+
+networks:
+  turism-nahavand-network:
+    driver: bridge
