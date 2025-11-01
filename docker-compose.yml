@@ -15,19 +15,21 @@ services:
       - pgdata:/var/lib/postgresql/data
     networks:
       - turism-nahavand-network
+      - nginx-network
 
-  nest:
+  tourism-nahavand-api-nest:
     build: .
-    container_name: nest_app
+    container_name: tourism-nahavand-api-nest
     restart: always
     depends_on:
       - postgres
-    environment:
+    env_file:
       - .env
     ports:
       - "4000:4000"
     networks:
       - turism-nahavand-network
+      - nginx-network
 
 volumes:
   pgdata:
@@ -35,3 +37,5 @@ volumes:
 networks:
   turism-nahavand-network:
     driver: bridge
+  nginx-network:
+    external: true
