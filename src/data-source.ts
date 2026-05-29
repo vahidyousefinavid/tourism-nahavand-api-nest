@@ -16,6 +16,9 @@ export const dataSourceOptions: DataSourceOptions = {
       : __dirname + '/**/*.entity{.ts,.js}',
   ],
   synchronize: true,
+  // <-- اضافه کردن retry
+  // retryAttempts: 10,     // تعداد تلاش
+  // retryDelay: 5000,      // فاصله بین تلاش‌ها به میلی‌ثانیه (5 ثانیه)
 };
 
 const dataSource = new DataSource(dataSourceOptions);

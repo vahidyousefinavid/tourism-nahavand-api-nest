@@ -13,6 +13,7 @@ import { LocationModule } from './location/location.module';
 import { EventTimeRangeModule } from './event-time-range/event-time-range.module';
 import { UploadController } from './upload/upload.controller';
 import { UploadModule } from './upload/upload.module';
+import { InvestmentModule } from './investment/investment.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { UploadModule } from './upload/upload.module';
     LocationModule,
     EventTimeRangeModule,
     UploadModule,
+    InvestmentModule,
   ],
   controllers: [AppController, UploadController],
   providers: [
