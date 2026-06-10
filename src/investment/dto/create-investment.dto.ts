@@ -3,9 +3,10 @@ import {
   IsOptional,
   IsObject,
   IsArray,
-  ValidateNested,
   IsString,
   IsEnum,
+  IsInt,
+  Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { InvestmentCategory, RiskLevel, InvestmentStatus } from '../entities/investment.entity';
@@ -24,8 +25,14 @@ export class CreateInvestmentDto {
   fullDescription: { [lang: string]: string };
 
   @IsOptional()
-  @IsString()
-  image?: string;
+  @IsArray()
+  @IsString({ each: true })
+  images?: string[];
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  mainImageIndex?: number;
 
   @IsOptional()
   @IsEnum(InvestmentCategory)
@@ -36,12 +43,12 @@ export class CreateInvestmentDto {
   icon?: string;
 
   @IsOptional()
-  @IsString()
-  minInvestment?: string;
+  @IsObject()
+  minInvestment?: { amount: number; currency: string };
 
   @IsOptional()
-  @IsString()
-  maxInvestment?: string;
+  @IsObject()
+  maxInvestment?: { amount: number; currency: string };
 
   @IsOptional()
   @IsString()

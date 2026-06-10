@@ -49,11 +49,11 @@ export class InvestmentService {
   async findOne(id: string) {
     const investment = await this.investmentRepo.findOne({ where: { id } });
     if (!investment) throw new NotFoundException('Investment opportunity not found');
-
-    investment.views++;
-    await this.investmentRepo.save(investment);
-
     return investment;
+  }
+
+  async incrementView(id: string) {
+    await this.investmentRepo.increment({ id }, 'views', 1);
   }
 
   async update(id: string, dto: UpdateInvestmentDto) {

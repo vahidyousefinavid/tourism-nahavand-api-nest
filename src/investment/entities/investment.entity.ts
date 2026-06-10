@@ -38,9 +38,12 @@ export class Investment {
   @Column({ type: 'json', nullable: false })
   fullDescription: { [lang: string]: string };
 
-  // Image URL
-  @Column({ type: 'varchar', nullable: true })
-  image: string;
+  // Image URLs
+  @Column({ type: 'simple-array', nullable: true })
+  images: string[];
+
+  @Column({ type: 'int', default: 0 })
+  mainImageIndex: number;
 
   // Investment category
   @Column({
@@ -55,11 +58,11 @@ export class Investment {
   icon: string;
 
   // Investment information
-  @Column({ type: 'varchar', nullable: true })
-  minInvestment: string;
+  @Column({ type: 'json', nullable: true })
+  minInvestment: { amount: number; currency: string } | null;
 
-  @Column({ type: 'varchar', nullable: true })
-  maxInvestment: string;
+  @Column({ type: 'json', nullable: true })
+  maxInvestment: { amount: number; currency: string } | null;
 
   @Column({ type: 'varchar', nullable: true })
   expectedReturn: string;

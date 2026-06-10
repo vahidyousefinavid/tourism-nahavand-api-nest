@@ -73,6 +73,11 @@ export class LocationController {
     return this.locationService.findOne(id);
   }
 
+  @Post(':id/view')
+  incrementView(@Param('id') id: string) {
+    return this.locationService.incrementView(id);
+  }
+
   // ✅ اضافه شد: ۷ لوکیشن پر بازدید
   @Get('/top/views')
   getTopByViews() {

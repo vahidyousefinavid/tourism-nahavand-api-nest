@@ -80,6 +80,11 @@ export class EventController {
     return this.eventService.findOne(id);
   }
 
+  @Post(':id/view')
+  incrementView(@Param('id') id: string) {
+    return this.eventService.incrementView(id);
+  }
+
   // ✅ متد جدید: ۷ ایونت با بیشترین بازدید
   @Get('/top/views')
   getTopByViews() {

@@ -41,11 +41,11 @@ export class EventService {
   async findOne(id: string) {
     const event = await this.eventRepo.findOne({ where: { id }, relations: ['timeRanges'] });
     if (!event) throw new NotFoundException('Event not found');
-
-    event.views++;
-    await this.eventRepo.save(event);
-
     return event;
+  }
+
+  async incrementView(id: string) {
+    await this.eventRepo.increment({ id }, 'views', 1);
   }
 
   async update(id: string, dto: UpdateEventDto) {

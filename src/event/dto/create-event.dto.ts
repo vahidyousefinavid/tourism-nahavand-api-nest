@@ -1,7 +1,6 @@
 import {
   IsNotEmpty,
   IsOptional,
-  IsNumber,
   IsInt,
   IsArray,
   ValidateNested,
@@ -34,8 +33,8 @@ export class CreateEventDto {
   latlng?: { lat: number; lng: number };
 
   @IsOptional()
-  @IsNumber()
-  price?: number;
+  @IsObject()
+  price?: { amount: number; currency: string };
 
   @IsOptional()
   @IsInt()

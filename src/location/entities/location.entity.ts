@@ -31,8 +31,8 @@ export class Location {
     @Column({ type: 'json' })
     openingHours: Record<string, string>;
 
-    @Column({ type: 'json' })
-    entryFee: Record<string, string>;
+    @Column({ type: 'jsonb', nullable: true })
+    entryFee: { amount: number; currency: string } | null;
 
     @Column({ type: 'decimal', precision: 3, scale: 2, default: 0 })
     rating: number;

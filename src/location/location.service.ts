@@ -40,11 +40,11 @@ export class LocationService {
   async findOne(id: string) {
     const location = await this.locationRepo.findOne({ where: { id } });
     if (!location) throw new NotFoundException('Location not found');
-
-    location.views++;
-    await this.locationRepo.save(location);
-
     return location;
+  }
+
+  async incrementView(id: string) {
+    await this.locationRepo.increment({ id }, 'views', 1);
   }
 
   async update(id: string, dto: UpdateLocationDto) {

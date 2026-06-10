@@ -39,10 +39,10 @@ export class CreateLocationDto {
   @IsObject()
   openingHours: Record<string, string>;
 
-  @ApiProperty({ description: 'Localized entry fee', example: { fa: '20 هزار تومان', en: '$2' } })
-  @IsNotEmpty()
+  @ApiProperty({ description: 'Entry fee as MoneyValue', example: { amount: 20000, currency: 'IRT' }, required: false })
+  @IsOptional()
   @IsObject()
-  entryFee: Record<string, string>;
+  entryFee?: { amount: number; currency: string };
 
   @ApiProperty({ description: 'Rating between 0 and 5', required: false })
   @IsOptional()

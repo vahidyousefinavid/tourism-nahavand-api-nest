@@ -21,8 +21,8 @@ export class Event {
     @Column({ type: 'json', nullable: true })
     latlng: { lat: number; lng: number };
 
-    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-    price: number;
+    @Column({ type: 'jsonb', nullable: true })
+    price: { amount: number; currency: string } | null;
 
     @Column({ type: 'int', default: 0 })
     capacity: number;
