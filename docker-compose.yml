@@ -25,6 +25,9 @@ services:
       - postgres
     env_file:
       - .env
+    environment:
+      # Override localhost → postgres service name inside Docker network
+      POSTGRES_HOST: postgres
     ports:
       - "4000:4000"
     networks:
