@@ -17,7 +17,8 @@ FROM node:18-alpine
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-COPY --from=builder /app/node_modules ./node_modules
+RUN npm ci --omit=dev --prefer-offline --no-audit --progress=false
+
 COPY --from=builder /app/dist ./dist
 
 ENV NODE_ENV=production
