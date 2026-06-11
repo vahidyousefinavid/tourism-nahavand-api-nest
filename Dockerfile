@@ -1,23 +1,23 @@
 # Stage 1: Build
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 
-RUN npm ci --prefer-offline --no-audit --progress=false
+RUN npm install --no-audit --progress=false
 
 COPY . .
 
 RUN npm run build
 
 # Stage 2: Runtime
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev --prefer-offline --no-audit --progress=false
+RUN npm install --omit=dev --no-audit --progress=false
 
 COPY --from=builder /app/dist ./dist
 
