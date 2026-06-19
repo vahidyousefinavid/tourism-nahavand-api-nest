@@ -105,6 +105,10 @@ export class Investment {
   })
   status: string;
 
+  // موقعیت جغرافیایی (برای اطلس سرمایه‌گذاری)
+  @Column({ type: 'json', nullable: true })
+  latlng: { lat: number; lng: number } | null;
+
   // Views counter
   @Column({ type: 'int', default: 0 })
   views: number;

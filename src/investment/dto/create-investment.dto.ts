@@ -85,4 +85,8 @@ export class CreateInvestmentDto {
   @IsOptional()
   @IsEnum(InvestmentStatus)
   status?: string;
+
+  @IsOptional()
+  @IsObject()
+  latlng?: { lat: number; lng: number };
 }
