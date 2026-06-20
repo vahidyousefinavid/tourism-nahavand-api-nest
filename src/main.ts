@@ -6,8 +6,23 @@ import { AppModule } from './app.module';
 import * as cors from 'cors';
 import * as bodyParser from 'body-parser';
 import { join } from 'path';
+import { mkdirSync } from 'fs';
+
+const UPLOAD_DIRS = [
+  'uploads',
+  'uploads/locations',
+  'uploads/events',
+  'uploads/investments',
+  'uploads/nature-places',
+  'uploads/creative-city-news',
+  'uploads/creative-city-initiatives',
+];
 
 async function bootstrap() {
+  // پوشه‌های آپلود رو در شروع ایجاد کن تا multer خطا نده
+  for (const dir of UPLOAD_DIRS) {
+    mkdirSync(join(process.cwd(), dir), { recursive: true });
+  }
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalPipes(
     new ValidationPipe({

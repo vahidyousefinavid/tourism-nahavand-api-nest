@@ -30,12 +30,15 @@ services:
       POSTGRES_HOST: postgres
     ports:
       - "4000:4000"
+    volumes:
+      - uploads_data:/app/uploads
     networks:
       - turism-nahavand-network
       - nginx-network
 
 volumes:
   pgdata:
+  uploads_data:
 
 networks:
   turism-nahavand-network:
